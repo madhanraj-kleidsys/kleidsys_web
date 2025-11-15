@@ -1,4 +1,5 @@
-"use client";;
+"use client";
+
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useInView } from "framer-motion";
 
@@ -23,8 +24,8 @@ export const Transition = ({
   const [progress, setProgress] = useState(0);
 
   const ref = useRef(null);
-  const inView = useInView(ref, { margin: "-100px", once: true }); 
-  
+  const inView = useInView(ref, { margin: "-100px", once: true });
+
   const rafRef = useRef(null);
   const timersRef = useRef([]);
 
@@ -46,7 +47,7 @@ export const Transition = ({
         setShowIntro(false);
         setProgress(0);
         rafRef.current = null;
-        onFinished?.();
+        onFinished && onFinished();
       }
     };
 
@@ -56,7 +57,7 @@ export const Transition = ({
   useEffect(() => {
     if (skip) {
       setShowIntro(false);
-      onFinished?.();
+      onFinished && onFinished();
       return;
     }
 
@@ -112,17 +113,23 @@ export const Transition = ({
   return (
     <div ref={ref} className="relative w-full h-full min-h-full">
       <div className="relative z-0 w-full h-full">{children}</div>
+
       {showIntro && (
         <div
           className="absolute inset-0 z-40 flex items-center justify-center"
-          aria-hidden={!showIntro ? undefined : true}>
+          aria-hidden={showIntro ? true : undefined}
+        >
           <div
             className="absolute inset-0"
             style={
               type === "curved"
-                ? { clipPath: getCurvedClip(progress), transition: animating ? undefined : "none" }
+                ? {
+                    clipPath: getCurvedClip(progress),
+                    transition: animating ? undefined : "none",
+                  }
                 : { transform: getSlideTransform(progress) }
-            }>
+            }
+          >
             <div className={`absolute inset-0 ${className}`} />
             <div className="absolute inset-0 flex items-center justify-center">
               {typeof intro === "function" ? intro(startTransition) : intro}
