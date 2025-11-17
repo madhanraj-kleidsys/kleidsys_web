@@ -1,8 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { theme } from '../../theme/theme';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { Box } from '@mui/material';
+import Header from '../Header';
+import HeroSection from '../HeroSection';
+import BenefitsSection from '../BenefitsSection';
+import FeaturesSection from '../FeaturesSection';
+import CTASection from '../CTASection';
+import Footer from '../Footer'
+
 
 export default function KleidSysLoader() {
+
   const [showText, setShowText] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const logoRef = useRef(null);
@@ -22,6 +34,8 @@ export default function KleidSysLoader() {
     white: "#ffffff",
     shadow: "rgba(0, 160, 240, 0.3)",
   };
+
+  // const posts = pockeys
 
   // Initialize SVG paths for drawing animation
   useEffect(() => {
@@ -220,7 +234,7 @@ export default function KleidSysLoader() {
         // clipPath: "circle(0% at 50% 50%)",
 
         // Bottom 
-          clipPath: "circle(0% at 50% 100%)",
+        clipPath: "circle(0% at 50% 100%)",
 
         // Top 
         // clipPath: "circle(0% at 50% 0%)",
@@ -232,6 +246,7 @@ export default function KleidSysLoader() {
         ease: "expo.inOut",
         onComplete: () => {
           setShowContent(true);
+          overlayRef.current.style.display = "none"; // or set opacity:0 or visibility:hidden
         },
       });
     }, 3300);
@@ -312,9 +327,12 @@ export default function KleidSysLoader() {
     <div
       style={{
         position: "relative",
-        overflow: "hidden",
+        // overflow: "hidden",
+        // width: "100vw",
+        // height: "100vh",
+        overflow: showContent ? "auto" : "hidden",  // allow scroll after shutter gone
         width: "100vw",
-        height: "100vh",
+        height: showContent ? "auto" : "100vh",
         // background: "white",
         background: `linear-gradient(135deg, ${BRAND_COLORS.dark} 0%, ${BRAND_COLORS.primary} 100%)`,
       }}
@@ -527,7 +545,46 @@ export default function KleidSysLoader() {
       </div>
 
       {/* MAIN CONTENT - HERO */}
-      <div className={`main-content ${showContent ? 'show' : ''}`}>
+
+      {/* {showContent && (
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box
+            sx={{
+              width: '100%',
+              minHeight: '100vh',
+              opacity: showContent ? 1 : 0,
+              pointerEvents: showContent ? 'auto' : 'none',
+              transition: 'opacity 0.8s ease-in-out',
+            }}
+          >
+            <Header />
+            <HeroSection />
+            <BenefitsSection />
+            <FeaturesSection />
+            <CTASection />
+            <Footer />
+          </Box>
+        </ThemeProvider>
+      )} */}
+
+
+
+
+      {/* <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box sx={{ width: '100%', minHeight: '100vh' }}>
+              <Header />
+              <HeroSection />
+              <BenefitsSection />
+              <FeaturesSection />
+              <CTASection />
+              <Footer />
+            </Box>
+          </ThemeProvider> */}
+
+
+      {/* <div className={`main-content ${showContent ? 'show' : ''}`}>
         <div ref={heroRef} className="hero-section">
           <div className="hero-content">
             <h1 ref={titleRef} className="hero-title">
@@ -535,7 +592,7 @@ export default function KleidSysLoader() {
             </h1>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
