@@ -5,15 +5,9 @@ import { theme } from '../../theme/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box } from '@mui/material';
-import Header from '../Header';
-import HeroSection from '../HeroSection';
-import BenefitsSection from '../BenefitsSection';
-import FeaturesSection from '../FeaturesSection';
-import CTASection from '../CTASection';
-import Footer from '../Footer'
 
-
-export default function KleidSysLoader() {
+// Add onComplete prop to the component
+export default function KleidSysLoader({ onComplete }) {
 
   const [showText, setShowText] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -228,8 +222,6 @@ export default function KleidSysLoader() {
     const shutterTimer = setTimeout(() => {
       console.log("🎭 Shutter effect starting");
       gsap.to(overlayRef.current, {
-        // top: "-100%",
-
         // inward
         // clipPath: "circle(0% at 50% 50%)",
 
@@ -246,6 +238,10 @@ export default function KleidSysLoader() {
         ease: "expo.inOut",
         onComplete: () => {
           setShowContent(true);
+          // Notify parent component that shutter is complete
+          if (onComplete) {
+            onComplete();
+          }
           overlayRef.current.style.display = "none"; // or set opacity:0 or visibility:hidden
         },
       });
@@ -256,7 +252,7 @@ export default function KleidSysLoader() {
       clearTimeout(shutterTimer);
       masterTimeline.kill();
     };
-  }, []);
+  }, [onComplete]);
 
   // ========================================
   // HERO TITLE ANIMATION (after shutter)
@@ -567,8 +563,6 @@ export default function KleidSysLoader() {
           </Box>
         </ThemeProvider>
       )} */}
-
-
 
 
       {/* <ThemeProvider theme={theme}>

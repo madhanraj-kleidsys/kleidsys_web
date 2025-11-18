@@ -39,6 +39,7 @@ export default function CTASection() {
     <Box
       sx={{
         py: 10,
+        // background: `linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)`,
         background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
       }}
     >

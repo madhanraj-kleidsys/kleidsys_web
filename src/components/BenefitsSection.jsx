@@ -46,8 +46,8 @@ export default function BenefitsSection() {
   const benefits = [
     {
       icon: ThunderboltIcon,
-      title: '30+ Years Expertise',
-      description: 'Trusted by 500+ fashion brands worldwide',
+      title: '5+ Years Expertise',
+      description: 'Trusted by 100+ fashion brands worldwide',
     },
     {
       icon: SmartToyIcon,
