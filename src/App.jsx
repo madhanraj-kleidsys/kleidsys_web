@@ -1,26 +1,13 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import TransitionUp from './components/shutters/TransitionUp.jsx'
-// import ShutterScreen from './components/shutters/ShutterScreen.jsx'
-// import Transition from './components/transition';
-// import HomePage from './components/HomePage.jsx'
-// function App() {
-//   return (
-//     <>
-//       {/* <ShutterScreen/> */}
-      
-//     </>
-//   )
-// }
-
-// export default App
-
+// import React from 'react';
+// import { ThemeProvider } from '@mui/material/styles';
+// import CssBaseline from '@mui/material/CssBaseline';
+// import { Box } from '@mui/material';
+// import { theme } from './theme/theme';
 import React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Box } from '@mui/material';
-import { theme } from './theme/theme';
+import { CssVarsProvider } from '@mui/joy/styles';
+import { CssBaseline, Box } from '@mui/joy';
+import ExpandableDock from './components/dock/ExpandableDock';
+
 import ShutterScreen from './components/shutters/ShutterScreen.jsx';
 import Header from './components/Header'
 import HeroSection from './components/HeroSection';
@@ -29,12 +16,28 @@ import FeaturesSection from './components/FeaturesSection';
 import CTASection from './components/CTASection';
 import Footer from './components/Footer';
 
+import Navbar from './components/NavBar';
+
 function App() {
   return (
     <>
-    {/* < ShutterScreen /> */}
+      <CssVarsProvider>
+        <CssBaseline />
+        <Box
+          sx={{
+            minHeight: '100vh',
+            background: 'linear-gradient(180deg, #8d8383ff 0%, #f8fafb 50%, #5aa1e9d8 100%)',
+          }}
+        >
+          <ExpandableDock />
+          {/* <HeroSection /> */}
+        </Box>
+      </CssVarsProvider>
 
-    <ThemeProvider theme={theme}>
+
+      {/* <Navbar /> */}
+      {/* < ShutterScreen /> */}
+      {/* <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ width: '100%', minHeight: '100vh' }}>
         <Header />
@@ -44,9 +47,8 @@ function App() {
         <CTASection />
         <Footer />
       </Box>
-    </ThemeProvider>  
+    </ThemeProvider>     */}
     </>
-
   );
 }
 
