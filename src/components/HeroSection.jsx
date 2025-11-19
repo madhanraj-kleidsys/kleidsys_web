@@ -74,8 +74,8 @@ export default function HeroSection({showShutter = false}) {
   return (
     <>
     {/* {showShutter && <ShutterScreen />} */}
-      <Header />
-      {/* <ExpandableDock /> */}
+      {/* <Header /> */}
+      <ExpandableDock />
       <Box
         ref={containerRef}
         sx={{

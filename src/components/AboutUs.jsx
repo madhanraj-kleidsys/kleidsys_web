@@ -13,6 +13,247 @@ gsap.registerPlugin(ScrollTrigger);
 
 const AboutUs = () => {
   const wrapperRef = useRef(null);
+  const titleRef = useRef(null); // Ref for title animation
+  const stageRef = useRef(null);
+  const txtRef = useRef(null);
+  const charsRef = useRef([]); // Array of char refs
+  const bodyRef = useRef(document.body);
+
+  // ✅ Define all animation constants at component scope
+  const weightInit = 600;    // Initial font weight
+  const weightTarget = 400;  // Target font weight when dragged
+  const weightDiff = weightInit - weightTarget;
+  const stretchInit = 150;   // Initial font stretch percentage
+  const stretchTarget = 80;  // Target font stretch when dragged
+  const stretchDiff = stretchInit - stretchTarget;
+  const maxYScale = 2.5;     // Maximum vertical scale
+  const elasticDropOff = 0.8; // Elastic dispersion factor
+
+  // Custom SplitText function if you don't have premium plugin
+  const splitTextIntoChars = (text) => {
+    const container = document.createElement('div');
+    container.style.position = 'relative';
+    container.style.display = 'inline-block';
+
+    text.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.textContent = char === ' ' ? '\u00A0' : char;
+      span.className = 'char';
+      span.style.cssText = `
+          position: relative;
+          display: inline-block;
+          padding-top: 1.08vw;
+          text-align: center;
+          will-change: font-weight, font-stretch, transform;
+        `;
+      container.appendChild(span);
+    });
+
+    return container;
+  };
+
+  // Mouse interaction handlers
+  useEffect(() => {
+    let isMouseDown = false;
+    let mouseInitialY = 0;
+    let mouseFinalY = 0;
+    let distY = 0;
+    let charIndexSelected = 0;
+    let charH = 0;
+    let elasticDropOff = 0.8;
+    let dragYScale = 0;
+    const weightInit = 600;
+    const weightTarget = 400;
+    const weightDiff = weightInit - weightTarget;
+    const stretchInit = 150;
+    const stretchTarget = 80;
+    const stretchDiff = stretchInit - stretchTarget;
+    const maxYScale = 2.5;
+
+    const calculateCharHeight = () => {
+      if (txtRef.current) {
+        charH = txtRef.current.offsetHeight;
+      }
+    };
+
+    const initTextEvents = () => {
+      const chars = charsRef.current.filter(Boolean);
+      const numChars = chars.length;
+
+      // Mouse events
+      const handleMouseDown = (e, index) => {
+        mouseInitialY = e.clientY;
+        charIndexSelected = index;
+        isMouseDown = true;
+        bodyRef.current.classList.add('grab');
+        console.clear();
+      };
+
+      const handleMouseMove = (e) => {
+        if (isMouseDown) {
+          mouseFinalY = e.clientY;
+          calcDist();
+          setFontDragDimensions();
+        }
+      };
+
+      const handleMouseUp = (e) => {
+        if (isMouseDown) {
+          mouseFinalY = e.clientY;
+          isMouseDown = false;
+          snapBackText();
+          bodyRef.current.classList.remove('grab');
+        }
+      };
+
+      // Add event listeners
+      bodyRef.current.addEventListener('mouseup', handleMouseUp);
+      bodyRef.current.addEventListener('mousemove', handleMouseMove);
+
+      chars.forEach((char, index) => {
+        if (char) {
+          char.addEventListener('mousedown', (e) => handleMouseDown(e, index));
+        }
+      });
+
+      // Cleanup
+      return () => {
+        bodyRef.current.removeEventListener('mouseup', handleMouseUp);
+        bodyRef.current.removeEventListener('mousemove', handleMouseMove);
+        chars.forEach((char) => {
+          if (char) {
+            char.removeEventListener('mousedown', handleMouseDown);
+          }
+        });
+      };
+    };
+
+    const calcDist = () => {
+      let maxYDragDist = charH * (maxYScale - 1);
+      distY = mouseInitialY - mouseFinalY;
+      dragYScale = distY / maxYDragDist;
+      if (dragYScale > (maxYScale - 1)) {
+        dragYScale = maxYScale - 1;
+      } else if (dragYScale < -0.5) {
+        dragYScale = -0.5;
+      }
+    };
+
+    const setFontDragDimensions = () => {
+      const chars = charsRef.current.filter(Boolean);
+      const numChars = chars.length;
+
+      gsap.to(chars, {
+        y: (index) => {
+          let fracDispersion = calcFracDispersion(index, numChars);
+          return fracDispersion * -50;
+        },
+        fontWeight: (index) => {
+          let fracDispersion = calcFracDispersion(index, numChars);
+          return weightInit - (fracDispersion * weightDiff);
+        },
+        fontStretch: (index) => {
+          let fracDispersion = calcFracDispersion(index, numChars);
+          return stretchInit - (fracDispersion * stretchDiff);
+        },
+        scaleY: (index) => {
+          let fracDispersion = calcFracDispersion(index, numChars);
+          let scaleY = 1 + fracDispersion;
+          if (scaleY < 0.5) scaleY = 0.5;
+          return scaleY;
+        },
+        ease: 'power4',
+        duration: 0.6,
+      });
+    };
+
+    const calcFracDispersion = (index, numChars) => {
+      let dispersion = 1 - (Math.abs(index - charIndexSelected) / (numChars * elasticDropOff));
+      return dispersion * dragYScale;
+    };
+
+    const snapBackText = () => {
+      const chars = charsRef.current.filter(Boolean);
+      const numChars = chars.length;
+
+      gsap.to(chars, {
+        y: 0,
+        fontWeight: weightInit,
+        fontStretch: stretchInit,
+        scaleY: 1,
+        ease: 'elastic(0.35, 0.1)',
+        duration: 1,
+        stagger: {
+          each: 0.02,
+          from: charIndexSelected,
+        },
+      });
+    };
+
+    // Initialize events after animation
+    const timeoutId = setTimeout(() => {
+      initTextEvents();
+      calculateCharHeight();
+    }, 2000); // Wait for initial animation to complete
+
+    // Resize handler
+    const handleResize = () => {
+      calculateCharHeight();
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Initial title animation
+  useEffect(() => {
+    if (titleRef.current) {
+      const text = titleRef.current.textContent;
+
+      // Clear the content and replace with split chars
+      titleRef.current.innerHTML = '';
+
+      // Create split text container
+      const splitContainer = splitTextIntoChars(text);
+      titleRef.current.appendChild(splitContainer);
+
+      // Set refs for all chars
+      const chars = splitContainer.querySelectorAll('.char');
+      charsRef.current = Array.from(chars);
+
+      // Animate in
+      gsap.fromTo(
+        chars,
+        {
+          y: (i) => {
+            const rect = chars[0].getBoundingClientRect();
+            return -(rect.y + 500); // Off-screen buffer
+          },
+          fontWeight: weightTarget || 400,
+          fontStretch: '80%',
+          scaleY: 2,
+        },
+        {
+          y: 0,
+          fontWeight: 600,
+          fontStretch: '150%',
+          scaleY: 1,
+          ease: 'elastic(0.2, 0.1)',
+          duration: 1.5,
+          delay: 0.5,
+          stagger: {
+            each: 0.05,
+            from: 'random',
+          },
+        }
+      );
+    }
+  }, []);
+
 
   useEffect(() => {
     // Smooth skew effect like the CodePen example
@@ -83,20 +324,128 @@ const AboutUs = () => {
   return (
     <>
       <ExpandableDock />
+      <style jsx global>{`
+        @font-face {
+          font-family: 'GT-Flexa';
+          src: url('https://assets.codepen.io/61488/GT-Flexa-VF-Trial.woff2');
+          font-display: block;
+          font-style: normal;
+          font-weight: 100 800;
+          font-stretch: 10% 200%;
+        }
+
+        // body {
+        //   cursor: url("data:image/svg+xml,%3Csvg width='64px' height='64px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 700'%3E%3Cpath d='M419.99,560.0013c83.627,0,151.67-68.041,151.67-151.67v-198.33A46.6565,46.6565,0,0,0,499.047,171.22a46.6714,46.6714,0,0,0-70-23.3323,46.7853,46.7853,0,0,0-44.055-31.219,46.2641,46.2641,0,0,0-23.332,6.2773V46.669a46.668,46.668,0,1,0-93.336,0v272.79l-64.145-32.082a70.2983,70.2983,0,0,0-31.289-7.375,44.6638,44.6638,0,0,0-31.5,76.23l150.88,150.87A179.4167,179.4167,0,0,0,420,560ZM172.9,303.33a21.3182,21.3182,0,0,0-15.0035,36.379l150.9,150.88a156.058,156.058,0,0,0,111.18,46.082c70.77,0,128.36-57.562,128.36-128.33V210.001a23.332,23.332,0,1,0-46.664,0v58.332a11.668,11.668,0,0,1-23.336,0V186.669a23.332,23.332,0,1,0-46.664,0v81.668a11.668,11.668,0,0,1-23.336,0v-105a23.332,23.332,0,0,0-46.664,0v105a11.668,11.668,0,0,1-23.336,0V46.677a23.332,23.332,0,0,0-46.664,0v291.67a11.66,11.66,0,0,1-16.8712,10.43l-81.035-40.508a46.9273,46.9273,0,0,0-20.863-4.9258Z' transform='translate(0 -0.001)' fill='%23fff'/%3E%3Cpath d='M420,560a179.4167,179.4167,0,0,1-127.73-52.898L141.39,356.232a44.6638,44.6638,0,0,1,31.5-76.23,70.2983,70.2983,0,0,1,31.289,7.375l64.145,32.082V46.669a46.668,46.668,0,1,1,93.336,0v76.277a46.2641,46.2641,0,0,1,23.332-6.2773,46.7853,46.7853,0,0,1,44.055,31.219,46.6714,46.6714,0,0,1,70,23.3323A46.6565,46.6565,0,0,1,571.66,210.0013v198.33c0,83.629-68.043,151.67-151.67,151.67ZM172.9,303.33a21.3182,21.3182,0,0,0-15.0035,36.379l150.9,150.88a156.058,156.058,0,0,0,111.18,46.082c70.77,0,128.36-57.562,128.36-128.33V210.001a23.332,23.332,0,1,0-46.664,0v58.332a11.668,11.668,0,0,1-23.336,0V186.669a23.332,23.332,0,1,0-46.664,0v81.668a11.668,11.668,0,0,1-23.336,0v-105a23.332,23.332,0,0,0-46.664,0v105a11.668,11.668,0,0,1-23.336,0V46.677a23.332,23.332,0,0,0-46.664,0v291.67a11.66,11.66,0,0,1-16.8712,10.43l-81.035-40.508a46.9273,46.9273,0,0,0-20.863-4.9258Z' transform='translate(0 -0.001)'/%3E%3C/svg%3E") 32 32, pointer;
+        // }
+
+        body.grab {
+          cursor: url("data:image/svg+xml,%3Csvg width='64px' height='64px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 700'%3E%3Cpath d='M419.9949,560.0013a179.4167,179.4167,0,0,1-127.73-52.898l-46.691-46.668a81.2138,81.2138,0,0,1-23.914-57.77v-35.352a81.1643,81.1643,0,0,1,23.918-57.75l22.75-22.723v-53.504a46.6566,46.6566,0,0,1,72.613-38.7813,46.691,46.691,0,0,1,88.106,0,46.6714,46.6714,0,0,1,70,23.3323,46.6566,46.6566,0,0,1,72.613,38.7813v151.67c0,83.625-68.039,151.66-151.67,151.66Zm-151.6526-221.66a11.666,11.666,0,1,0,23.332,0v-46.645a.19.19,0,0,1,.0039-.0469V233.34a23.332,23.332,0,1,1,46.664,0v35a11.666,11.666,0,1,0,23.332,0l.0039-58.336a23.332,23.332,0,1,1,46.664,0V268.34a11.666,11.666,0,1,0,23.332,0l.0039-35a23.332,23.332,0,1,1,46.664,0v35a11.666,11.666,0,1,0,23.332,0l.0039-11.668a23.332,23.332,0,1,1,46.664,0l-.0039,151.67c0,70.768-57.59,128.33-128.36,128.33a156.1776,156.1776,0,0,1-111.21-46.059l-46.691-46.668a58.0537,58.0537,0,0,1-17.078-41.254v-35.352a57.9448,57.9448,0,0,1,17.082-41.254l6.2539-6.2539Z' fill='%23fff'/%3E%3Cpath d='M419.9949,560.0013a179.4167,179.4167,0,0,1-127.73-52.898l-46.691-46.668a81.2138,81.2138,0,0,1-23.914-57.77v-35.352a81.1643,81.1643,0,0,1,23.918-57.75l22.75-22.723v-53.504a46.6566,46.6566,0,0,1,72.613-38.7813,46.691,46.691,0,0,1,88.106,0,46.6714,46.6714,0,0,1,70,23.3323,46.6566,46.6566,0,0,1,72.613,38.7813v151.67c0,83.625-68.039,151.66-151.67,151.66Zm-151.66-240.17-6.2539,6.2539a57.9448,57.9448,0,0,0-17.082,41.254v35.352a58.0537,58.0537,0,0,0,17.078,41.254l46.691,46.668a156.1776,156.1776,0,0,0,111.21,46.059c70.77,0,128.36-57.562,128.36-128.33l.0039-151.67a23.332,23.332,0,1,0-46.664,0l-.0039,11.668a11.666,11.666,0,1,1-23.332,0v-35a23.332,23.332,0,1,0-46.664,0l-.0039,35a11.666,11.666,0,1,1-23.332,0v-58.336a23.332,23.332,0,1,0-46.664,0l-.0039,58.336a11.666,11.666,0,1,1-23.332,0v-35a23.332,23.332,0,1,0-46.664,0v58.309a.19.19,0,0,0-.0039,.0469v46.645a11.666,11.666,0,1,1-23.332,0Z'/%3E%3C/svg%3E") 32 32, pointer;
+        }
+
+        .stage {
+          position: relative;
+          display: grid;
+          place-items: center;
+          width: 100%;
+          min-height: 25vh;
+          visibility: visible;
+        }
+
+          // .txt {
+          //   margin: 0;
+          //   font-size: clamp(3rem, 8vw, 6rem);
+          //   font-family: 'GT-Flexa', sans-serif;
+          //   font-weight: 600;
+          //   font-stretch: 150%;
+          //   line-height: 0.8;
+          //   letter-spacing: -0.05em;
+          //   user-select: none;
+          //   text-shadow: 0 0.05em 0 #23c5e2ff,
+          //               0 0.1em 0.1em rgba(24, 195, 201, 0.8),
+          //               0 0.4em 0.3em rgba(83, 127, 223, 0.25);
+          //   color: #000000ff;
+          //   // background: linear-gradient(135deg, #60a5fa 50%, #22d3ee 30%);
+          //   -webkit-background-clip: text;
+          //   background-clip: text;
+          //   text-align: center;
+          //   padding: 2rem 0;
+          // }
+
+          .txt {
+                margin: 0;
+                font-size: clamp(3rem, 8vw, 6rem);
+                font-family: 'GT-Flexa', sans-serif;
+                font-weight: 600;
+                font-stretch: 150%;
+                line-height: 0.8;
+                letter-spacing: -0.05em;
+                user-select: none;
+                text-shadow: 0 0.05em 0 #00d9ffff,
+                            0 0.1em 0.1em rgba(0, 0, 0, 1),
+                            0 0.4em 0.3em rgba(213, 215, 219, 1);
+                
+                /* Gradient Text Setup */
+                color: transparent;
+                background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                
+                text-align: center;
+                padding: 2rem 0;
+              }
+
+
+
+        .char {
+          position: relative;
+          display: inline-block;
+          transform-origin: center bottom;
+          padding: 0.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .char:hover {
+          cursor: grab;
+        }
+      `}</style>
+
       <Box
         ref={wrapperRef}
         sx={{
           minHeight: '100vh',
           background: '#fcfdff',
-          color: '#334155',
-          marginTop: {'30px': '0px', 'md': '50px' },
+          // color: '#334155',
+          marginTop: { '30px': '0px', 'md': '50px' },
           pt: { xs: 2, md: 7 },
           pb: 10,
           px: { xs: 1, md: 0 },
         }}
       >
-        <Container sx={{ mb: 10 }}>
+        <Box className="stage" ref={stageRef}>
           <Typography
+            ref={titleRef}
+            className="txt"
+            component="h1"
+            sx={{
+              fontFamily: 'GT-Flexa, sans-serif',
+              fontWeight: 600,
+              fontStretch: '150%',
+              lineHeight: 0.8,
+              letterSpacing: '-0.05em',
+              textAlign: 'center',
+              color: 'white',
+              // textShadow: '0 0.05em 0 #FFB0C0, 0 0.1em 0.1em rgba(70,0,35, 0.3), 0 0.4em 0.3em rgba(70,0,35, 0.1)',
+              margin: 0,
+              padding: { xs: '1rem 0', md: '2rem 0' },
+            }}
+          >
+            About Us
+          </Typography>
+        </Box>
+
+        <Container sx={{ mb: 10 }}>
+          {/* <Typography
             level="h1"
             sx={{
               fontWeight: 900,
@@ -108,7 +457,7 @@ const AboutUs = () => {
             }}
           >
             About Us
-          </Typography>
+          </Typography> */}
           <Typography
             level="body-lg"
             sx={{
@@ -247,7 +596,7 @@ const AboutUs = () => {
 
         <Container className="reveal-section skew-section"
         //  sx={{ mb: 1 }}
-         >
+        >
           <Stack
             direction={{ xs: 'column-reverse', md: 'row' }}
             alignItems="center"
@@ -296,5 +645,5 @@ const AboutUs = () => {
     </>
   );
 };
-
 export default AboutUs;
+
