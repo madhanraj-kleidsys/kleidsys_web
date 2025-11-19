@@ -12,7 +12,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { HiMenuAlt4 } from "react-icons/hi";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
 import WaveText from "./WaveText";
 import ImagePeelEffect from "./ImagePeelEffect";
 import dockRight from "../../assets/dockRight.jpg";
@@ -56,7 +56,7 @@ const ExpandableDock = () => {
   useEffect(() => {
     if (isOpen && kLogoRef.current) {
       const paths = kLogoRef.current.querySelectorAll("path");
-      const tweens = []; // Store tweens for cleanup
+      const tweens = [];
 
       paths.forEach((path) => {
         const length = path.getTotalLength();
@@ -89,70 +89,70 @@ const ExpandableDock = () => {
     }
   }, [isOpen]);
 
- const openDock = () => {
-  if (!navbarRef.current || !overlayRef.current) {
-    console.log("Refs not ready");
-    return;
-  }
+  const openDock = () => {
+    if (!navbarRef.current || !overlayRef.current) {
+      console.log("Refs not ready");
+      return;
+    }
 
-  setIsOpen(true);
+    setIsOpen(true);
 
-  // Kill any existing timeline
-  if (timelineRef.current) {
-    timelineRef.current.kill();
-  }
+    // Kill any existing timeline
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
 
-  const tl = gsap.timeline();
-  timelineRef.current = tl;
+    const tl = gsap.timeline();
+    timelineRef.current = tl;
 
-  tl.to(navbarRef.current, {
-    height: "calc(75vh)",
-    borderRadius: "24px",
-    duration: 0.8,
-    ease: "power3.out",
-  })
-    .to(
-      overlayRef.current,
-      {
-        opacity: 1,
-        duration: 0.4,
-      },
-      "-=0.6"
-    )
-    .to(
-      contentRef.current,
-      {
-        opacity: 1,
-        y: 0,
-        display: "flex", // Make visible
-        duration: 0.6,
-        ease: "power2.out",
-      },
-      "-=0.3"
-    )
-    .from(
-      navLinksRef.current.filter(Boolean), // Filter out null refs
-      {
-        opacity: 0,
-        y: 30,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: "power2.out",
-      },
-      "-=0.4"
-    )
-    .from(
-      ".social-icon",
-      {
-        scale: 0,
-        rotation: -180,
-        stagger: 0.08,
-        duration: 0.5,
-        ease: "back.out(1.7)",
-      },
-      "-=0.5"
-    );
-};
+    tl.to(navbarRef.current, {
+      height: "calc(60vh)",
+      borderRadius: "24px",
+      duration: 0.8,
+      ease: "power3.out",
+    })
+      .to(
+        overlayRef.current,
+        {
+          opacity: 1,
+          duration: 0.4,
+        },
+        "-=0.6"
+      )
+      .to(
+        contentRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          display: "flex", // Make visible
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        "-=0.3"
+      )
+      .from(
+        navLinksRef.current.filter(Boolean), // Filter out null refs
+        {
+          opacity: 0,
+          y: 30,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: "power2.out",
+        },
+        "-=0.4"
+      )
+      .from(
+        ".social-icon",
+        {
+          scale: 0,
+          rotation: -180,
+          stagger: 0.08,
+          duration: 0.5,
+          ease: "back.out(1.7)",
+        },
+        "-=0.5"
+      );
+  };
 
 
   // Replace your closeDock function with this:
@@ -203,11 +203,11 @@ const ExpandableDock = () => {
 
   const toggleDock = () => {
     console.log("Toggle clicked, isOpen:", isOpen);
-  console.log("Refs:", {
-    navbar: navbarRef.current,
-    content: contentRef.current,
-    overlay: overlayRef.current
-  });
+    console.log("Refs:", {
+      navbar: navbarRef.current,
+      content: contentRef.current,
+      overlay: overlayRef.current
+    });
     if (!isOpen) {
       openDock();
     } else {
@@ -253,20 +253,20 @@ const ExpandableDock = () => {
 
   // Add this useEffect at the end, before the return statement:
   useEffect(() => {
-  return () => {
-    // Cleanup all GSAP animations on unmount
-    if (timelineRef.current) {
-      timelineRef.current.kill();
-    }
-    gsap.killTweensOf([
-      navbarRef.current,
-      contentRef.current,
-      overlayRef.current,
-      kLogoRef.current,
-      kleidsysLogoRef.current,
-    ]);
-  };
-}, []);
+    return () => {
+      // Cleanup all GSAP animations on unmount
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+      gsap.killTweensOf([
+        navbarRef.current,
+        contentRef.current,
+        overlayRef.current,
+        kLogoRef.current,
+        kleidsysLogoRef.current,
+      ]);
+    };
+  }, []);
 
 
   return (
@@ -288,12 +288,13 @@ const ExpandableDock = () => {
           zIndex: 998,
         }}
       />
-
       {/* Expandable Navbar/Dock */}
       <Box
         ref={navbarRef}
         sx={{
-          m: { xs: 2, sm: 3, md: 2 },
+          m: { xs: 2, sm: 3, md: 4 },
+          mx: { md: 40 },
+          // py:{md:2},
           borderRadius: "20px",
           position: "fixed",
           top: 0,
@@ -424,7 +425,7 @@ const ExpandableDock = () => {
 
           {/* Right Buttons */}
           <Stack direction="row" spacing={1.5}>
-            <Button
+            {/* <Button
               variant="solid"
               sx={{
                 background: "linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%)",
@@ -442,7 +443,7 @@ const ExpandableDock = () => {
               }}
             >
               Explore Now
-            </Button>
+            </Button> */}
             <Button
               variant="solid"
               sx={{
@@ -465,40 +466,39 @@ const ExpandableDock = () => {
           </Stack>
         </Box>
 
-        {/* Expanded Content (3-Grid Layout) */}
+        {/* Expanded Content (2-Grid Layout) */}
         {isOpen && (
           <Box
             ref={contentRef}
             sx={{
               width: "100%",
               height: "calc(100% - 70px)",
-              //   opacity: 1,
               opacity: 1,
               transform: "translateY(20px)",
-              //   transform: "translateY(0)",
               px: { xs: 3, md: 6 },
               pt: 4,
               pb: 2,
               display: "flex",
-            // display: isOpen ? "flex" : "none",
               flexDirection: "column",
               gap: 4,
               overflowY: "auto",
               pointerEvents: isOpen ? "auto" : "none",
             }}
           >
-            {/* 3-Column Grid */}
+            {/* 2-Column Grid */}
             <Box
               sx={{
                 flex: 1,
                 display: "grid",
-                gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+                gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
                 gap: { xs: 4, md: 6 },
                 alignItems: "start",
               }}
             >
-              {/* Left - Navigation Links */}
-              <Stack spacing={3}>
+              {/* Left Column - Navigation Links */}
+              <Stack spacing={3} sx={{
+                ml: { xs: 0, md: 6}
+              }}>
                 {navItems.map((item, index) => (
                   <Box
                     key={item.label}
@@ -511,71 +511,71 @@ const ExpandableDock = () => {
                 ))}
               </Stack>
 
-              {/* Center - Social Links */}
-              <Stack
-                spacing={2}
-                sx={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  level="h4"
+              {/* Right Column - Image + Social Icons Below */}
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                {/* Image Section */}
+                <Box
                   sx={{
-                    fontWeight: 700,
-                    color: "#2d3748",
-                    mb: 2,
-                    fontSize: { xs: "1.2rem", md: "1.5rem" },
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "250px",
                   }}
                 >
-                  Reach Us at:
-                </Typography>
-                <Stack
-                  direction="row"
-                  spacing={2}
-                  flexWrap="wrap"
-                  justifyContent="center"
-                >
-                  {socialLinks.map((social) => (
-                    <IconButton
-                      key={social.label}
-                      className="social-icon"
-                      variant="soft"
-                      sx={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: "50%",
-                        background: "#ffffff",
-                        color: social.color,
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                        "&:hover": {
-                          background: social.color,
-                          color: "#ffffff",
-                          transform: "scale(1.15) rotate(10deg)",
-                          boxShadow: `0 8px 20px ${social.color}40`,
-                        },
-                      }}
-                    >
-                      <social.icon size={24} />
-                    </IconButton>
-                  ))}
-                </Stack>
-              </Stack>
+                  <ImagePeelEffect imageSrc={dockRight} />
+                </Box>
 
-              {/* Right - Image with Effects */}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ImagePeelEffect imageSrc={dockRight} />
+                {/* Social Icons Section Below Image */}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, mt: 4 }}>
+                  <Typography
+                    level="h5"
+                    sx={{
+                      fontWeight: 600,
+                      color: "#2d3748",
+                      textAlign: "center",
+                      fontSize: { xs: "1rem", md: "1.25rem" },
+                    }}
+                  >
+                    Reach Us at:
+                  </Typography>
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    flexWrap="wrap"
+                    justifyContent="center"
+                    sx={{ gap: 1 }}
+                  >
+                    {socialLinks.map((social) => (
+                      <IconButton
+                        key={social.label}
+                        className="social-icon"
+                        variant="soft"
+                        sx={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: "50%",
+                          background: "#ffffff",
+                          color: social.color,
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          "&:hover": {
+                            background: social.color,
+                            color: "#ffffff",
+                            transform: "scale(1.15) rotate(10deg)",
+                            boxShadow: `0 8px 20px ${social.color}40`,
+                          },
+                        }}
+                      >
+                        <social.icon size={20} />
+                      </IconButton>
+                    ))}
+                  </Stack>
+                </Box>
               </Box>
             </Box>
           </Box>
         )}
+
       </Box>
     </>
   );

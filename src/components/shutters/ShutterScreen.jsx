@@ -1,12 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { theme } from '../../theme/theme';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Box } from '@mui/material';
 
-// Add onComplete prop to the component
 export default function KleidSysLoader({ onComplete }) {
 
   const [showText, setShowText] = useState(false);
@@ -28,8 +23,6 @@ export default function KleidSysLoader({ onComplete }) {
     white: "#ffffff",
     shadow: "rgba(0, 160, 240, 0.3)",
   };
-
-  // const posts = pockeys
 
   // Initialize SVG paths for drawing animation
   useEffect(() => {

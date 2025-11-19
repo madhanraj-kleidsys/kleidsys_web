@@ -1,12 +1,14 @@
-import { Box } from '@mui/material';
+import { Box } from '@mui/joy';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HeroSection from './components/HeroSection';
 import AboutUs from './components/AboutUs';
+import KleidSys from './components/KleidSys'; 
 import OurPartners from './components/OurPartners';
 import ContactUs from './components/ContactUs';
 import ExpandableDock from './components/dock/ExpandableDock';
 import ShutterScreen from './components/shutters/ShutterScreen';
+
 function App() {
   return (
     <Router>
@@ -17,20 +19,11 @@ function App() {
         }}
       >
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <ShutterScreen />
-                <HeroSection />
-              </>
-            }
-          />
-          {/* <Route path="/" element={<HeroSection />} /> */}
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/kleidsys" element={<div>KleidSys Page</div>} />
-          <Route path="/partners" element={<OurPartners />} />
-          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/" element={<HeroSection showShutter={true} />} />
+          <Route path="/about" element={<AboutUs showShutter={false} />} />
+          <Route path="/kleidsys" element={<KleidSys showShutter={false} />} />
+          <Route path="/partners" element={<OurPartners showShutter={false} />} />
+          <Route path="/contact" element={<ContactUs showShutter={false} />} />
         </Routes>
       </Box>
     </Router>

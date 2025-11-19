@@ -50,11 +50,14 @@ export default function Header() {
           {/* Navigation */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 4 }}>
             {/* Solutions , 'Contact' */}
-            {['Home', 'About', 'KleidSys', 'Our Partners'].map((item) => (
+            {['Home', 'About', 'KleidSys', 'Our Partners',].map((item) => (
               <Typography
                 key={item}
                 sx={{
-                  color:theme.palette.text.primary,
+                  color:"#02f2faff",
+                  fontSize: 16,
+                  fontWeight: 500,
+                  //  color: theme.palette.text.primary,
                   // color: trigger ? theme.palette.text.primary : '#ffffff',
                   cursor: 'pointer',
                   transition: 'color 0.3s',

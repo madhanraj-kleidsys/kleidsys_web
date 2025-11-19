@@ -1,18 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import {
   Box,
-  Container,
   Typography,
   Button,
   Stack,
-  Paper,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import kleidHome from "../assets/kleidHome1.png";
+import ShutterScreen from "../components/shutters/ShutterScreen";
 import ExpandableDock from "../components/dock/ExpandableDock";
+import Header from "./Header";
 import Footer from "../components/Footer";
 import BenefitsSection from "../components/BenefitsSection";
 import FeaturesSection from "../components/FeaturesSection";
@@ -20,7 +20,7 @@ import CTASection from "../components/CTASection";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function HeroSection() {
+export default function HeroSection({showShutter = false}) {
   const imageRef = useRef(null);
   const textRef = useRef(null);
   const containerRef = useRef(null);
@@ -73,7 +73,9 @@ export default function HeroSection() {
 
   return (
     <>
-      <ExpandableDock />
+    {/* {showShutter && <ShutterScreen />} */}
+      <Header />
+      {/* <ExpandableDock /> */}
       <Box
         ref={containerRef}
         sx={{

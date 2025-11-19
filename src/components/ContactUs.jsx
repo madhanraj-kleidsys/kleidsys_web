@@ -3,7 +3,7 @@ import { Box, Button, FormControl, FormLabel, Input, Textarea, Stack, Typography
 import gsap from 'gsap';
 import ExpandableDock from './dock/ExpandableDock';
 import Footer from '../components/Footer';
-
+import contactUs from '../assets/contactUs.png';
 const ContactUs = () => {
   const heroRef = useRef(null);
   const contactBoxRef = useRef(null);
@@ -70,7 +70,7 @@ const ContactUs = () => {
         minHeight: '100vh',
         background: '#ffffff',
         py: 8,
-        marginTop: '20px',
+        marginTop:{ '20px': '0px', 'md': '50px' },
       }}
     >
       <Container maxWidth="lg">
@@ -284,7 +284,8 @@ const ContactUs = () => {
             >
               <Box
                 component="img"
-                src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/a75641b4-d1d9-4925-bec9-873ca0865a3a.png"
+                src={contactUs}
+                // "https://user-gen-media-assets.s3.amazonaws.com/gemini_images/a75641b4-d1d9-4925-bec9-873ca0865a3a.png"
                 alt="Contact illustration"
                 sx={{
                   width: '100%',

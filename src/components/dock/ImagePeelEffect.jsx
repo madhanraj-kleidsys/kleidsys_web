@@ -86,7 +86,7 @@ const ImagePeelEffect = ({ imageSrc }) => {
       onMouseLeave={() => setIsHovered(false)}
       sx={{
         position: 'relative',
-        width: { xs: '200px', md: '300px' },
+        width: { xs: '200px', md: '800px' },
         height: { xs: '200px', md: '300px' },
         borderRadius: '20px',
         overflow: 'hidden',
