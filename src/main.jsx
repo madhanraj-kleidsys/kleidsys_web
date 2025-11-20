@@ -6,7 +6,7 @@ import AnimatedCaps from './components/AnimatedCaps'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {/* <App /> */}
-    <AnimatedCaps />
+    <App />
+    {/* <AnimatedCaps /> */}
   </StrictMode>,
 )

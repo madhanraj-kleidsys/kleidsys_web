@@ -1,0 +1,129 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+}
+
+/* Hero Section */
+.hero-section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #000 0%, #1a1a1a 100%);
+  color:#f37608;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 8vw, 7rem);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+  margin: 1rem 0;
+  letter-spacing: -0.02em;
+}
+
+/* Model Section */
+.model-section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #0a0a0a;
+  position: relative;
+}
+
+.rotating-element {
+  font-size: 12rem;
+  filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.3));
+  will-change: transform;
+}
+
+.model-text {
+  position: absolute;
+  bottom: 15%;
+  left: 10%;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 600;
+}
+
+/* Cards Section */
+.cards-section {
+  padding: 10rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #000;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  will-change: transform;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Parallax Section */
+.parallax-section {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: -10%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+  z-index: -1;
+  will-change: transform;
+}
+
+.parallax-text {
+  font-size: clamp(2rem, 6vw, 5rem);
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  will-change: transform;
+}

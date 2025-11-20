@@ -1,4 +1,3 @@
-// App.jsx
 import * as Scrollytelling from "@bsmnt/scrollytelling";
 
 const text = "SCROLLYTELLING DEMO";
